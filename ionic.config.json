@@ -1,0 +1,7 @@
+{
+  "name": "Ajuste de Ponto",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}
