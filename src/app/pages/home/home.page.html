@@ -1,0 +1,119 @@
+<ion-content>
+  <div class="background">
+    <div class="toolbar">
+      <ion-item>
+        <ion-avatar>
+          <img src="" />
+        </ion-avatar>
+        <ion-label>
+          <h1>Olá {{ dataUser?.userName.split('@ti.com') }}</h1>
+          <p>{{ greetingDay }}</p>
+        </ion-label>
+      </ion-item>
+    </div>
+    <div class="container-spinner" [hidden]="dataUser">
+      <ion-spinner color="primary" name="bubbles"></ion-spinner>
+    </div>
+    <div [hidden]="!dataUser">
+      <div>
+        <ion-item hidden>
+          <ion-label position="stacked">Status</ion-label>
+          <ion-select
+            (ionChange)="onChangeStatus($event)"
+            (ionCancel)="ionSelectStatus.disabled = true"
+            (ionBlur)="ionSelectStatus.disabled = true"
+            placeholder="Selecione o status"
+            interface="popover"
+            cancelText="Cancelar"
+            okText="Marcar"
+          >
+            <ion-select-option *ngFor="let status of listTypePoints"
+              >{{ status }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+
+        <br />
+        <!---->
+        <ion-row class="btn-pagination">
+          <!---->
+          <ion-col size="4">
+            <ion-button
+              (click)="onClickButtonNextAndBackPage('BACK')"
+              class="button-left"
+              fill="clean"
+              color="light"
+              size="small"
+            >
+              <ion-icon name="chevron-back" color="dark"> </ion-icon>
+            </ion-button>
+          </ion-col>
+          <!---->
+          <ion-col size="4">
+            <h6 class="text">{{ currentDate | date: 'dd' }}</h6>
+          </ion-col>
+          <!---->
+          <ion-col size="4">
+            <ion-button
+              (click)="onClickButtonNextAndBackPage('NEXT')"
+              class="button-right"
+              color="light"
+              fill="clean"
+              size="small"
+            >
+              <ion-icon name="chevron-forward" color="dark"> </ion-icon>
+            </ion-button>
+          </ion-col>
+        </ion-row>
+        <!---->
+
+        <ion-button
+          class="btn-point"
+          (click)="onClickBaterPonto()"
+          #ionButtonBaterPonto
+          shape="round"
+          fill="clear"
+        >
+          <img src="assets/images/button-ponto.svg" />
+        </ion-button>
+        <ion-button
+          (click)="onClickVoltarPausa()"
+          #ionButtonVoltarPausa
+          [hidden]="ionButtonVoltarPausa.disabled"
+          shape="round"
+          color="tertiary"
+        >
+          <ion-label color="light">Voltar da Pausa</ion-label>
+        </ion-button>
+        <h1 class="label-tempo-logado">Tempo Logado</h1>
+        <div class="container-timer">
+          <div class="timer">
+            <h1>{{ loggedTime }}</h1>
+            <p>/6h:20min</p>
+          </div>
+        </div>
+        <h1 class="label-tempo-logado">{{ currentStatus }}</h1>
+      </div>
+      <ion-list>
+        <ion-list-header>
+          <ion-title>Pontos do dia</ion-title>
+        </ion-list-header>
+        <ion-accordion-group>
+          <ion-accordion *ngFor="let point of listPoints">
+            <ion-item class="card-point" slot="header">
+              <h1>{{ point?.status }}</h1>
+            </ion-item>
+            <ion-list slot="content">
+              <ion-label>
+                <h1>Detalhes</h1>
+                <p>
+                  Hora da assinatura: {{ point?.hourPoint | date: 'hh:mm' }}
+                </p>
+              </ion-label>
+            </ion-list>
+          </ion-accordion>
+        </ion-accordion-group>
+      </ion-list>
+    </div>
+  </div>
+</ion-content>

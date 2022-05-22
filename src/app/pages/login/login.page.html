@@ -1,0 +1,39 @@
+<ion-content color="primary">
+  <div class="background-top">
+    <h1>Olá Tudo bem?</h1>
+  </div>
+  <div class="cloud-bar"></div>
+  <div class="background-bottom">
+    <form [formGroup]="formSign">
+      <ion-item>
+        <ion-label position="stacked">Id</ion-label>
+        <ion-icon color="primary" slot="start" name="person"></ion-icon>
+        <ion-input
+          formControlName="userName"
+          placeholder="Digite seu usuário"
+          type="text"
+          minlength="3"
+          maxlength="100"
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Senha</ion-label>
+        <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+        <ion-input
+          formControlName="password"
+          placeholder="Digite sua senha"
+          type="password"
+          minlength="8"
+          maxlength="8"
+        ></ion-input>
+      </ion-item>
+      <br />
+      <ion-button routerLink="/create-account" expand="full" color="primary" shape="round"
+        >Criar uma conta</ion-button
+      >
+      <ion-button (click)="onClickLogin()" [disabled]="!formSign.valid" expand="full" color="primary" shape="round"
+        >Entrar</ion-button
+      >
+    </form>
+  </div>
+</ion-content>

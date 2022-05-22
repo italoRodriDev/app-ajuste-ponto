@@ -1,0 +1,28 @@
+
+.background-top{
+    
+    height: 20%;
+    h1{
+        font-weight: bold;
+        text-align: center;
+        padding-top: 10%;
+    }
+}
+
+.cloud-bar{    
+    height: 100px;
+    background-repeat: no-repeat;
+    min-width: 100%;
+    background-image: url(/assets/images/nuvem.svg);
+}
+
+.background-bottom{
+    min-height: 100%;
+    background-color:white;
+    ion-button{
+        margin-top: 10%;
+        margin-left: 10%;
+        margin-right: 10%;
+    }
+    
+}
