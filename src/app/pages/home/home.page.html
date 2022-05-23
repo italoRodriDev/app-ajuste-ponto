@@ -2,9 +2,6 @@
   <div class="background">
     <div class="toolbar">
       <ion-item>
-        <ion-avatar>
-          <img src="" />
-        </ion-avatar>
         <ion-label>
           <h1>Olá {{ dataUser?.userName.split('@ti.com') }}</h1>
           <p>{{ greetingDay }}</p>
@@ -44,13 +41,14 @@
               fill="clean"
               color="light"
               size="small"
+              expand="full"
             >
               <ion-icon name="chevron-back" color="dark"> </ion-icon>
             </ion-button>
           </ion-col>
           <!---->
           <ion-col size="4">
-            <h6 class="text">{{ currentDate | date: 'dd' }}</h6>
+            <h6 class="text">{{ currentDateJorney | date: 'dd / MM' }}</h6>
           </ion-col>
           <!---->
           <ion-col size="4">
@@ -60,6 +58,7 @@
               color="light"
               fill="clean"
               size="small"
+              expand="full"
             >
               <ion-icon name="chevron-forward" color="dark"> </ion-icon>
             </ion-button>
@@ -94,7 +93,8 @@
         </div>
         <h1 class="label-tempo-logado">{{ currentStatus }}</h1>
       </div>
-      <ion-list>
+      <!---->
+      <ion-list [hidden]="!listPoints.length">
         <ion-list-header>
           <ion-title>Pontos do dia</ion-title>
         </ion-list-header>
@@ -115,5 +115,15 @@
         </ion-accordion-group>
       </ion-list>
     </div>
+    <!---->
+    <br />
+    <ion-button (click)="onClickAdjustmentPoint()" expand="full" shape="round"
+      >Solicitar Ajuste de Ponto</ion-button
+    >
+    <br />
+    <ion-button (click)="onClickExitAccount()" expand="full" shape="round"
+      >Sair da Conta</ion-button
+    >
+    <br />
   </div>
 </ion-content>

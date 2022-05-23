@@ -38,6 +38,20 @@ export class FormsService {
     password: this.passValidator,
   });
 
+  // -> Formulario de ajuste de ponto
+  formAdjustmentPoint: FormGroup = this.fb.group({
+    id: [],
+    dateJorney: this.reqValidator,
+    nameUser: this.nameValidator,
+    typeAdjustment: this.reqValidator,
+    reasonAdjustment: this.reqValidator,
+    hourStart: this.reqValidator,
+    hourEnd: this.reqValidator,
+    typeAction: this.reqValidator,
+    adjustment: this.reqValidator,
+    urlEvidence: this.reqValidator
+  });
+
   constructor(private fb: FormBuilder) {
     this.configInit();
    }

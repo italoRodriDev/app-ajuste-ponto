@@ -19,8 +19,7 @@ export class SetPointService {
   ) {}
 
   // -> Marcando ponto de inicio de jornada
-  setPointUserInitJorney(userData: User, typePoint: TypePoint) {
-    const idPoint = moment().format('DDMMYYYY');
+  setPointJorney(idPoint: string, userData: User, typePoint: TypePoint) {
     const currentDate = moment().format();
 
     if (userData.manager != null) {

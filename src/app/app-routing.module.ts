@@ -31,6 +31,10 @@ const routes: Routes = [
     path: 'config',
     loadChildren: () => import('./pages/config/config.module').then( m => m.ConfigPageModule)
   },
+  {
+    path: 'adjustment-point',
+    loadChildren: () => import('./pages/adjustment-point/adjustment-point.module').then( m => m.AdjustmentPointPageModule)
+  },
 ];
 
 @NgModule({

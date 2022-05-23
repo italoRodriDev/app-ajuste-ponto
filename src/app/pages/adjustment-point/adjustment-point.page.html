@@ -1,0 +1,273 @@
+<ion-content mode="md">
+  <div class="background">
+    <div class="toolbar">
+      <ion-item>
+        <ion-label>
+          <h1>Ajuste de Ponto</h1>
+          <p>Ajuste seu ponto...</p>
+        </ion-label>
+      </ion-item>
+      <ion-button (click)="onDismiss()" color="tertiary" shape="round">
+        <ion-icon color="light" name="chevron-down-circle"></ion-icon>
+      </ion-button>
+    </div>
+    <form [formGroup]="formAdjustment">
+      <h1 class="label-title">Selecione a data da Jornada</h1>
+      <div class="container-date-time">
+        <ion-datetime
+          formControlName="dateJorney"
+          locale="pt-BR"
+          presentation="date"
+        ></ion-datetime>
+      </div>
+      <ion-item>
+        <ion-label position="stacked">Seu nome</ion-label>
+        <ion-input
+          formControlName="nameUser"
+          type="name"
+          placeholder="Digite seu nome"
+          minlength="3"
+          maxlength="100"
+          required
+        ></ion-input>
+      </ion-item>
+      <!---->
+      <div [hidden]="!formAdjustment.controls.nameUser.valid">
+        <h1 class="label-title">Selecione o tipo de ajuste</h1>
+        <ion-item>
+          <ion-label position="stacked">Selecione uma opção</ion-label>
+          <ion-select
+            formControlName="typeAdjustment"
+            placeholder="Selecione uma opção"
+            interface="popover"
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option *ngFor="let type of listTypePoints"
+              >{{ type }}</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+      </div>
+      <!---->
+      <div [hidden]="!formAdjustment.controls.typeAdjustment.valid">
+        <h1 class="label-title">O que deseja fazer?</h1>
+        <ion-item>
+          <ion-label position="stacked">Selecione uma opção</ion-label>
+          <ion-select
+            formControlName="typeAction"
+            placeholder="Selecione uma opção"
+            interface="popover"
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option value="Adicionar Ponto"
+              >Adicionar Ponto(s)</ion-select-option
+            >
+            <ion-select-option value="Remover Ponto"
+              >Excluir Ponto(s)</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+      </div>
+
+      <div [hidden]="!formAdjustment.controls.typeAction.valid">
+        <h1 class="label-title">Selecione o horário</h1>
+        <ion-item>
+          <ion-label position="stacked">Selecione uma opção</ion-label>
+          <ion-select
+            formControlName="adjustment"
+            #selectAdjustment
+            placeholder="Selecione uma opção"
+            interface="popover"
+            cancelText="Cancelar"
+            okText="Confirmar"
+          >
+            <ion-select-option value="Começo e Término"
+              >Começo e Término</ion-select-option
+            >
+            <ion-select-option value="Apenas o Começo"
+              >Apenas o Começo</ion-select-option
+            >
+            <ion-select-option value="Apenas o Término"
+              >Apenas o Término</ion-select-option
+            >
+          </ion-select>
+        </ion-item>
+      </div>
+      <div [hidden]="!formAdjustment.controls.adjustment.valid">
+        <div class="container-hour">
+          <ion-row>
+            <ion-col
+              size="5"
+              [hidden]="selectAdjustment.value == 'Apenas o Término'"
+            >
+              <div class="container-timer">
+                <h1>Começou</h1>
+                <ion-datetime
+                  formControlName="hourStart"
+                  locale="pt-BR"
+                  presentation="time"
+                ></ion-datetime>
+              </div>
+            </ion-col>
+            <ion-col
+              size="2"
+              [hidden]="selectAdjustment.value != 'Começo e Término' "
+            >
+              <div class="line-vertical"></div>
+            </ion-col>
+            <ion-col
+              size="5"
+              [hidden]="selectAdjustment.value == 'Apenas o Começo'"
+            >
+              <div class="container-timer">
+                <h1>Terminou</h1>
+                <ion-datetime
+                  formControlName="hourEnd"
+                  locale="pt-BR"
+                  presentation="time"
+                ></ion-datetime>
+              </div>
+            </ion-col>
+          </ion-row>
+        </div>
+      </div>
+
+      <div
+        [hidden]="!formAdjustment.controls.hourStart.valid || !formAdjustment.controls.hourEnd.valid"
+      >
+        <h1 class="label-title">Qual o motivo do ajuste?</h1>
+        <ion-item>
+          <ion-label position="stacked">Motivo do ajuste</ion-label>
+          <ion-textarea
+            formControlName="reasonAdjustment"
+            type="text"
+            cols="3"
+            placeholder="Digite o motivo"
+            minlength="3"
+            maxlength="100"
+            required
+          ></ion-textarea>
+        </ion-item>
+      </div>
+
+      <div [hidden]="!formAdjustment.controls.reasonAdjustment.valid">
+        <h1 class="label-title">Qual sua evidência?</h1>
+        <ion-item>
+          <ion-label position="stacked">Link da evidência</ion-label>
+          <ion-input
+            formControlName="urlEvidence"
+            type="url"
+            placeholder="Cole a url"
+            minlength="3"
+            maxlength="100"
+            required
+          ></ion-input>
+        </ion-item>
+      </div>
+
+      <br />
+      <ion-button
+        (click)="onClickAdd()"
+        [disabled]="!formAdjustment.valid"
+        expand="full"
+        color="tertiary"
+        shape="round"
+      >
+        <ion-label color="light">Adicionar</ion-label>
+      </ion-button>
+      <br />
+    </form>
+    <ion-list [hidden]="!listAdjustment.length">
+      <ion-list-header>
+        <ion-title>Lista de ajustes</ion-title>
+      </ion-list-header>
+      <ion-accordion-group>
+        <ion-accordion class="card-list" *ngFor="let item of listAdjustment">
+          <ion-card slot="header">
+            <ion-card-content>
+              <ion-card-title>{{ item.typeAdjustment }}</ion-card-title>
+              <ion-card-subtitle
+                >Data da solicitação: {{ item.dateSolicitation | date:
+                'dd/MM/YYYY' }}</ion-card-subtitle
+              >
+            </ion-card-content>
+          </ion-card>
+          <ion-list slot="content">
+            <ion-card>
+              <ion-item-divider>
+                <h1>Dados do Solicitante</h1>
+              </ion-item-divider>
+
+              <ion-item>
+                <ion-label>Nome:</ion-label>
+                <ion-label>{{ item.nameUser }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Data da solicitação:</ion-label>
+                <ion-label
+                  >{{ item.dateSolicitation | date: 'dd/MM/YYYY hh:mm'
+                  }}</ion-label
+                >
+              </ion-item>
+              <ion-item-divider>
+                <h1>Dados do Ajuste</h1>
+              </ion-item-divider>
+
+              <ion-item>
+                <ion-label>Tipo:</ion-label>
+                <ion-label>{{ item.adjustment }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Precisa:</ion-label>
+                <ion-label>{{ item.typeAction }}</ion-label>
+              </ion-item>
+              <ion-item>
+                <ion-label>Onde ajustar:</ion-label>
+                <ion-label>{{ item.typeAdjustment }}</ion-label>
+              </ion-item>
+              <ion-item [hidden]="item.typeAdjustment == 'Apenas o Término'">
+                <ion-label>Começou ás:</ion-label>
+                <ion-label>{{ item.hourStart | date: 'hh:mm' }}</ion-label>
+              </ion-item>
+              <ion-item [hidden]="item.typeAdjustment == 'Apenas o Começo'">
+                <ion-label>Terminou ás:</ion-label>
+                <ion-label>{{ item.hourEnd | date: 'hh:mm' }}</ion-label>
+              </ion-item>
+              <ion-item-divider>
+                <h1>Motivo</h1>
+              </ion-item-divider>
+              <ion-item>
+                <ion-text> {{ item.reasonAdjustment }} </ion-text>
+              </ion-item>
+              <ion-item>
+                <ion-label>Evidência</ion-label>
+                <ion-chip
+                  color="primary"
+                  (click)="onClickViewEvidence(item.urlEvidence)"
+                  >Abrir no navegador</ion-chip
+                >
+              </ion-item>
+              <br />
+              <ion-button
+                (click)="onClickRemoveList(item)"
+                size="small"
+                shape="round"
+                >Excluir Ajuste</ion-button
+              >
+              <br />
+            </ion-card>
+          </ion-list>
+        </ion-accordion>
+      </ion-accordion-group>
+    </ion-list>
+    <br />
+    <ion-button (click)="onClickSend()" shape="round" color="tertiary"
+      >
+      <ion-label color="light">Enviar Solicitação</ion-label>
+      </ion-button
+    >
+    <br />
+  </div>
+</ion-content>

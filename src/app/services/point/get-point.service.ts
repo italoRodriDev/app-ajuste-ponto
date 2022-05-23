@@ -12,6 +12,7 @@ import { User } from 'src/app/models/user';
 })
 export class GetPointService {
   db = this.fireDatabase.database;
+  dataUser: User;
 
   private bsDataPoint = new BehaviorSubject<PointUserDay>(null);
   dataPointDay = this.bsDataPoint.asObservable();

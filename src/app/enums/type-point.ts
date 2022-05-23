@@ -1,9 +1,7 @@
 export enum TypePoint {
-    ENTRADA = 'Início de Expediente',
-    PAUSA = 'Pausa Curta',
+    ENTRADA = 'Início de Jornada',
+    PAUSA = 'Pausa Descanso',
     REFEICAO = 'Pausa Refeição',
-    SAIDA = 'Fim de Expediente',
-    VOLTA_PAUSA = 'Voltei da Pausa',
-    ERRO = 'Erro na Marcação',
-    EM_JORNADA = 'Online'
+    SAIDA = 'Fim da Jornada',
+    VOLTA_PAUSA = 'Volta da Pausa',
 }

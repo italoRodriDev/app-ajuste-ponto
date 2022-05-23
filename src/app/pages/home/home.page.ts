@@ -1,15 +1,16 @@
-import { AlertsService } from './../../services/utils/alerts/alerts.service';
-import { PointUserDay } from './../../models/point-user-day';
-import { User } from 'src/app/models/user';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/authentication/auth.service';
-import { SetPointService } from './../../services/point/set-point.service';
+import { AdjustmentPointPage } from './../adjustment-point/adjustment-point.page';
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
-import { GetPointService } from 'src/app/services/point/get-point.service';
-import { Point } from 'src/app/models/point';
-import { TypePoint } from 'src/app/enums/type-point';
-import { IonButton, IonSelect } from '@ionic/angular';
+import { IonButton, IonSelect, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
+import { TypePoint } from 'src/app/enums/type-point';
+import { Point } from 'src/app/models/point';
+import { User } from 'src/app/models/user';
+import { AuthService } from 'src/app/services/authentication/auth.service';
+import { GetPointService } from 'src/app/services/point/get-point.service';
+import { PointUserDay } from './../../models/point-user-day';
+import { SetPointService } from './../../services/point/set-point.service';
+import { AlertsService } from './../../services/utils/alerts/alerts.service';
 
 @Component({
   selector: 'app-home',
@@ -37,14 +38,15 @@ export class HomePage {
   currentStatus: String;
   loggedTime: String;
   greetingDay: String;
-  currentDate = moment().format();
+  currentDateJorney = moment().format();
 
   constructor(
     private authService: AuthService,
     private alertService: AlertsService,
     private setPointService: SetPointService,
     private getPointService: GetPointService,
-    private changeDetector: ChangeDetectorRef
+    private changeDetector: ChangeDetectorRef,
+    private modalCtrl: ModalController
   ) {}
 
   ionViewDidEnter() {
@@ -61,14 +63,14 @@ export class HomePage {
   // -> Recuperando dados do servico
   getDataService() {
     this.getMessegeTimeDay();
-    this.userSubs = this.authService.dataUser.subscribe((data: User) => {
-      this.dataUser = data;
+    this.userSubs = this.authService.dataUser.subscribe((userData: User) => {
+      this.dataUser = userData;
     });
 
     this.userPointSubs = this.getPointService.dataPointDay.subscribe(
-      (data: PointUserDay) => {
+      (pointUserDay: PointUserDay) => {
         this.resetDataDayPoints();
-        this.dataPoint = data;
+        this.dataPoint = pointUserDay;
       }
     );
 
@@ -169,14 +171,29 @@ export class HomePage {
   // -> Ouvindo select de status
   onChangeStatus(ev) {
     const status = ev.detail.value;
+    const dataPointDay = this.dataPoint;
+    const currentDate = moment().format('DDMMYYYY');
+
     if (status) {
-      this.setPointService.setPointUserInitJorney(this.dataUser, status);
-      this.ionSelectStatus.disabled = true;
+      if (!dataPointDay) {
+        this.setPointService.setPointJorney(currentDate, this.dataUser, status);
+        this.ionSelectStatus.disabled = true;
+      } else {
+        this.setPointService.setPointJorney(
+          dataPointDay.idUserPoint,
+          this.dataUser,
+          status
+        );
+        this.ionSelectStatus.disabled = true;
+      }
     }
   }
 
   // -> Clique em bater ponto
   onClickBaterPonto() {
+    const dateJorney = moment(this.currentDateJorney).format('DDMMYYYY');
+    const currentDate = moment().format('DDMMYYYY');
+
     this.ionSelectStatus.disabled = false;
     setTimeout(() => {
       this.ionSelectStatus.open();
@@ -185,43 +202,49 @@ export class HomePage {
 
   // -> Clique em voltar da pausa
   onClickVoltarPausa() {
-    this.setPointService.setPointUserInitJorney(
-      this.dataUser,
-      TypePoint.VOLTA_PAUSA
-    );
-    this.ionSelectStatus.disabled = true;
+    const dataPointDay = this.dataPoint;
+    const currentDate = moment().format('DDMMYYYY');
+
+    if (!dataPointDay) {
+      this.setPointService.setPointJorney(
+        currentDate,
+        this.dataUser,
+        TypePoint.VOLTA_PAUSA
+      );
+      this.ionSelectStatus.disabled = true;
+    } else {
+      this.setPointService.setPointJorney(
+        dataPointDay.idUserPoint,
+        this.dataUser,
+        TypePoint.VOLTA_PAUSA
+      );
+      this.ionSelectStatus.disabled = true;
+    }
   }
 
   // -> Botao proxima pagina de ponto
   onClickButtonNextAndBackPage(typeClick) {
-    // -> Data atual
-    const today = moment(this.currentDate);
+    const dataUser = this.dataUser;
+    const currentJorney = this.currentDateJorney;
     // -> Próxima data
-    const tomorrow = moment(this.currentDate).add(1, 'days');
+    const tomorrow = moment(currentJorney).add(1, 'days');
     // -> Data anterior
-    const yesterday = moment(this.currentDate)
-      .subtract(1, 'days')
-      .startOf('day');
+    const yesterday = moment(currentJorney).subtract(1, 'days').startOf('day');
 
     switch (typeClick) {
       case 'BACK':
         const filterYesterday = moment(yesterday).format('DDMMYYYY').toString();
-        this.getPointService.getDataPointDayUser(
-          filterYesterday,
-          this.dataUser
-        );
-        this.currentDate = moment(yesterday).format();
+        this.getPointService.getDataPointDayUser(filterYesterday, dataUser);
+        this.currentDateJorney = moment(yesterday).format();
         this.resetDataDayPoints();
         this.changeDetector.detectChanges();
-
         break;
       case 'NEXT':
         const filterTomorrow = moment(tomorrow).format('DDMMYYYY').toString();
-        this.getPointService.getDataPointDayUser(filterTomorrow, this.dataUser);
-        this.currentDate = moment(tomorrow).format();
+        this.getPointService.getDataPointDayUser(filterTomorrow, dataUser);
+        this.currentDateJorney = moment(tomorrow).format();
         this.resetDataDayPoints();
         this.changeDetector.detectChanges();
-
         break;
     }
   }
@@ -252,10 +275,26 @@ export class HomePage {
 
   // -> Resetando ponto
   resetDataDayPoints() {
+    this.loggedTime = '0h:00min';
+    this.currentStatus = 'Sem Jornada';
     this.dataPoint = null;
     while (this.listPoints.length) {
       this.listPoints.pop();
     }
     this.configStatus();
+  }
+
+  // -> Mostrar modal ajuste de ponto
+  async onClickAdjustmentPoint() {
+    const modal = await this.modalCtrl.create({
+      component: AdjustmentPointPage,
+      mode: 'ios',
+    });
+    await modal.present();
+  }
+
+  // -> Clique em sair da conta
+  onClickExitAccount(){
+    this.authService.singOutAccount();
   }
 }

@@ -1,3 +1,4 @@
+import { GetPointService } from './../point/get-point.service';
 import { User } from './../../models/user';
 import { AlertsService } from './../utils/alerts/alerts.service';
 import { Injectable, Type } from '@angular/core';
@@ -9,6 +10,7 @@ import { FormsService } from '../forms/forms.service';
 import { TypeUser } from 'src/app/enums/type-user';
 import { BehaviorSubject } from 'rxjs';
 import { Router } from '@angular/router';
+import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root',
@@ -26,6 +28,7 @@ export class AuthService {
   constructor(
     private formsService: FormsService,
     private alertService: AlertsService,
+    private getPointService: GetPointService,
     private fireAuth: AngularFireAuth,
     private fireDatabase: AngularFireDatabase,
     private navCtrl: NavController,
@@ -104,15 +107,16 @@ export class AuthService {
 
   // -> Recuperando dados do usuario
   async getDataUser(idUser: string) {
-
     await this.db
       .ref('dataUser')
       .child(idUser)
       .once('value', (snapshot) => {
         const data = snapshot.val();
-     
+
         if (data) {
-    
+          const idPoint = moment().format('DDMMYYYY');
+          this.getPointService.getDataPointDayUser(idPoint, data);
+
           switch (this.router.url) {
             case '/login':
               this.bsUser.next(data);
@@ -157,7 +161,6 @@ export class AuthService {
       .child('manager')
       .update(dataManager)
       .then(() => {
-       
         this.alertService.showAlert(
           'Conta atualizada com sucesso!',
           'Fique a vontade para continuar.',
@@ -253,7 +256,7 @@ export class AuthService {
   // -> Sair da conta
   singOutAccount() {
     this.fireAuth.signOut().then(() => {
-      this.navCtrl.navigateBack('init-section');
+      this.navCtrl.navigateBack('login');
     });
   }
 }
