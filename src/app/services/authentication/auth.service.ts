@@ -154,12 +154,30 @@ export class AuthService {
   }
 
   // -> Atualizando dados do usuario
-  async updateDataUser(dataUser: User, dataManager: User) {
+  async updateDataManagerUser(dataUser: User, dataManager: User) {
     await this.db
       .ref('dataUser')
       .child(dataUser.idUser)
       .child('manager')
       .update(dataManager)
+      .then(() => {
+        this.alertService.showAlert(
+          'Conta atualizada com sucesso!',
+          'Fique a vontade para continuar.',
+          ''
+        );
+      })
+      .catch((error) => {
+        this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
+      });
+  }
+
+  // -> Atualizando dados do usuario
+  async updateDataUser(dataUser: User) {
+    await this.db
+      .ref('dataUser')
+      .child(dataUser.idUser)
+      .update(dataUser)
       .then(() => {
         this.alertService.showAlert(
           'Conta atualizada com sucesso!',

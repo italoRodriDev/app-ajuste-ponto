@@ -33,7 +33,7 @@ export class AlertsService {
 
     const toast = await this.toastCtrl.create({
       message: message, 
-      duration: 300,
+      duration: 3000,
       mode: 'ios',
       buttons: [
         {

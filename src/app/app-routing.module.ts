@@ -35,6 +35,10 @@ const routes: Routes = [
     path: 'adjustment-point',
     loadChildren: () => import('./pages/adjustment-point/adjustment-point.module').then( m => m.AdjustmentPointPageModule)
   },
+  {
+    path: 'detail-adjustment',
+    loadChildren: () => import('./pages/detail-adjustment/detail-adjustment.module').then( m => m.DetailAdjustmentPageModule)
+  },
 ];
 
 @NgModule({

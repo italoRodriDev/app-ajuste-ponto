@@ -1,3 +1,4 @@
+import { TypeStatusAdjustment } from './../../enums/type-status-adjustment-pont';
 import { BehaviorSubject } from 'rxjs';
 import { AlertsService } from './../utils/alerts/alerts.service';
 import { User } from './../../models/user';
@@ -23,9 +24,10 @@ export class AdjustmentPointService {
     private alertService: AlertsService,
     private fireDatabase: AngularFireDatabase
   ) {
-    this.getAllAdjustment(this.currentDate);
+    this.getAllAdjustment(this.currentDate, null);
   }
 
+  // -> Salvando dados do ajuste
   saveDataAdjustment(userData: User, listAdjustment: Array<any>) {
     const id = moment().format('DDMMYYYY');
     const currentDate = moment().format();
@@ -60,27 +62,54 @@ export class AdjustmentPointService {
       });
   }
 
-  getAllAdjustment(date){
+  // -> Atualizando status do ajuste
+  updateStatusAdjustment(userData: User, status: TypeStatusAdjustment) {
+    const id = moment().format('DDMMYYYY');
 
     this.db
-    .ref('adjustment')
-    .child(date)
-    .once('value', snapshot => {
+      .ref('adjustment')
+      .child(id)
+      .child(userData.idUser)
+      .update({ status: status })
+      .then(() => {
+        this.alertService.showAlert(
+          'Status atualizado com sucesso!',
+          `Atualizado para: ${status}`,
+          'Fique a vontade para continuar.'
+        );
+      })
+      .catch((error) => {
+        this.alertService.showAlert(
+          'Algo saiu errado!',
+          'Verifique sua conexão!',
+          'ERRO: ' + error?.code
+        );
+      });
+  }
 
-      const data = snapshot.val();
-      if(data){
-        const array = Object.keys(data).map(index => data[index]);
-        this.bsAdjustment.next([]);
-        this.bsAdjustment.next(array);
-      }
+  // -> Recuperando todos os ajustes
+  getAllAdjustment(date: string, status: TypeStatusAdjustment) {
+    const filter = this.db.ref('adjustment').child(date);
 
-    }).catch((error) => {
-      this.alertService.showAlert(
-        'Algo saiu errado!',
-        'Verifique sua conexão!',
-        'ERRO: ' + error?.code
-      );
-    });
+    if (status != null) {
+      filter.orderByChild('status').equalTo(status);
+    }
 
+    filter
+      .once('value', (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const array = Object.keys(data).map((index) => data[index]);
+          this.bsAdjustment.next([]);
+          this.bsAdjustment.next(array);
+        }
+      })
+      .catch((error) => {
+        this.alertService.showAlert(
+          'Algo saiu errado!',
+          'Verifique sua conexão!',
+          'ERRO: ' + error?.code
+        );
+      });
   }
 }

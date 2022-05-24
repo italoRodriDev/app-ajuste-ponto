@@ -1,7 +1,9 @@
 export class User {
 
+    identification: string;
     idUser: string;
     userName: string;
+    name: string;
     typeUser: string;
     manager: any;
 

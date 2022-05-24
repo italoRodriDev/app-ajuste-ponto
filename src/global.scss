@@ -26,3 +26,15 @@
 @import "~@ionic/angular/css/flex-utils.css";
 
 
+ion-card{
+    box-shadow: rgb(0 0 0 / 12%) 0px 4px 16px;
+    border-radius: 20px;
+}
+
+ion-title{
+    color: black;
+}
+
+ion-label{
+    color: black;
+}
