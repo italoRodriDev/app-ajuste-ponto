@@ -1,10 +1,13 @@
+import { FormsService } from 'src/app/services/forms/forms.service';
+import { FormGroup } from '@angular/forms';
+import { UserService } from './../../services/user/user.service';
 import { AlertsService } from './../../services/utils/alerts/alerts.service';
 import { Subscription } from 'rxjs';
 import { ConfigService } from './../../services/config/config.service';
 import { AuthService } from 'src/app/services/authentication/auth.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { User } from 'src/app/models/user';
-import { IonInput } from '@ionic/angular';
+import { IonInput, ModalController } from '@ionic/angular';
 
 @Component({
   selector: 'app-config',
@@ -12,8 +15,7 @@ import { IonInput } from '@ionic/angular';
   styleUrls: ['./config.page.scss'],
 })
 export class ConfigPage implements OnInit {
-  @ViewChild('inputName') inputName: IonInput;
-  @ViewChild('inputId') inputId: IonInput;
+  formDataUser: FormGroup = this.formService.formDataUser;
   dataUser: User;
   dataManager: User;
   listManagers: Array<User> = [];
@@ -23,9 +25,11 @@ export class ConfigPage implements OnInit {
   managerSubs: Subscription;
 
   constructor(
-    private authService: AuthService,
+    private userService: UserService,
+    private formService: FormsService,
     private configService: ConfigService,
-    private alertService: AlertsService
+    private alertService: AlertsService,
+    private modalCtrl: ModalController
   ) {}
 
   ngOnInit() {}
@@ -36,9 +40,13 @@ export class ConfigPage implements OnInit {
 
   // -> Recuperando dados do servico
   getDataService() {
-    this.dataUserSubs = this.authService.dataUser.subscribe((data) => {
+    this.dataUserSubs = this.userService.dataUser.subscribe((data) => {
       this.dataUser = data;
-      this.configInitMangers();   
+      this.formDataUser.patchValue({
+        name: data?.name,
+        identification: data?.identification,
+      });
+      this.configInitMangers();
     });
 
     this.managerSubs = this.configService.listManagers.subscribe(
@@ -52,7 +60,7 @@ export class ConfigPage implements OnInit {
   // -> Config iniciais
   configInitMangers() {
     const manager = this.dataUser?.manager;
-   
+
     if (manager != null) {
       this.dataManager = manager;
     }
@@ -81,31 +89,23 @@ export class ConfigPage implements OnInit {
 
   // -> Salvando dados do usuario
   onClickSaveDataUser() {
-    const textName = this.inputName.value.toString();
-    const textId = this.inputId.value.toString();
+    const name = this.formDataUser.controls.name.value;
+    const identification = this.formDataUser.controls.identification.value;
 
     const dataUser = new User({
       idUser: this.dataUser.idUser,
-      name: textName,
-      identification: textId,
+      name: name,
+      identification: identification,
     });
 
-    if (textName !== '' && textName.length > 3) {
-      if (textId !== '' && textId.length > 3) {
-        this.authService.updateDataUser(dataUser);
-      } else {
-        this.alertService.showToast('Digite seu ID.');
-      }
-    } else {
-      this.alertService.showToast('Digite seu nome.');
-    }
+    this.userService.updateDataUser(dataUser);
   }
 
   // -> Salvar dados do gestor do colaborador
   onClickSaveDataManager() {
     if (this.dataUser) {
       if (this.dataManager) {
-        this.authService.updateDataManagerUser(this.dataUser, this.dataManager);
+        this.userService.updateDataManagerUser(this.dataUser, this.dataManager);
       } else {
         this.alertService.showAlert(
           'Ops! Selecione um gestor.',
@@ -120,5 +120,10 @@ export class ConfigPage implements OnInit {
         ''
       );
     }
+  }
+
+  // -> Voltar
+  onDismiss() {
+    this.modalCtrl.dismiss();
   }
 }

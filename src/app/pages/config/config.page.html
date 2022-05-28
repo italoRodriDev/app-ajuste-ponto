@@ -1,76 +1,86 @@
 <ion-header mode="md">
   <ion-toolbar>
     <ion-buttons>
-      <ion-back-button></ion-back-button>
-      <ion-title>Configurações</ion-title>
+      <ion-button (click)="onDismiss()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <ion-title>Perfil</ion-title>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
-
 <ion-content mode="md">
-  <ion-card button>
-    <ion-card-content>
-      <ion-card-subtitle>Meus dados</ion-card-subtitle>
-      <ion-card-title>{{ dataUser?.userName }}</ion-card-title>
-    </ion-card-content>
-  </ion-card>
-  <ion-card button>
-    <ion-card-content *ngIf="dataUser?.manager?.userName != null">
-      <ion-card-subtitle>Meu Gestor</ion-card-subtitle>
-      <ion-card-title>{{ dataUser?.manager?.userName }}</ion-card-title>
-    </ion-card-content>
-  </ion-card>
-  <!---->
-  <div *ngIf="dataUser?.typeUser == 'COLABORADOR'">
-    <ion-list>
-      <ion-list-header>
-        <ion-title>Selecion o Gestor</ion-title>
-      </ion-list-header>
-      <ion-searchbar
-        (ionChange)="onChangeSearch($event)"
-        placeholder="Buscar gestor"
-        mode="ios"
-      ></ion-searchbar>
-      <ion-radio-group
-        (ionChange)="onChangeRadioGroupManagers($event)"
-        [(ngModel)]="dataManager"
+  <div>
+    <ion-card button>
+      <ion-card-content>
+        <ion-card-subtitle>Meus dados</ion-card-subtitle>
+        <ion-card-title>{{ dataUser?.userName }}</ion-card-title>
+      </ion-card-content>
+    </ion-card>
+    <ion-card button>
+      <ion-card-content *ngIf="dataUser?.manager?.userName != null">
+        <ion-card-subtitle>Meu Gestor</ion-card-subtitle>
+        <ion-card-title>{{ dataUser?.manager?.userName }}</ion-card-title>
+      </ion-card-content>
+    </ion-card>
+    <!---->
+    <div *ngIf="dataUser?.typeUser == 'COLABORADOR' && listManagers.length > 0">
+      <ion-list>
+        <ion-list-header>
+          <ion-title>Selecion o Gestor</ion-title>
+        </ion-list-header>
+        <ion-searchbar
+          (ionChange)="onChangeSearch($event)"
+          placeholder="Buscar gestor"
+          mode="ios"
+        ></ion-searchbar>
+        <ion-radio-group
+          (ionChange)="onChangeRadioGroupManagers($event)"
+          [(ngModel)]="dataManager"
+        >
+          <ion-item *ngFor="let manager of listManagers">
+            <ion-title
+              >{{ manager?.name != null ? manager?.name :
+              manager?.userName.split('@ti.com') }}</ion-title
+            >
+            <ion-radio [value]="manager"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+      <ion-button expand="full" shape="round" (click)="onClickSaveDataManager()"
+        >Adicionar como meu Gestor</ion-button
       >
-        <ion-item *ngFor="let manager of listManagers">
-          <ion-title>{{ manager?.userName.split('@ti.com') }}</ion-title>
-          <ion-radio [value]="manager"></ion-radio>
-        </ion-item>
-      </ion-radio-group>
-    </ion-list>
-    <ion-button expand="full" shape="round" (click)="onClickSaveDataManager()"
-      >Adicionar como meu Gestor</ion-button
-    >
-  </div>
+    </div>
 
-  <form>
-    <ion-item>
-      <ion-label position="stacked">Seu nome</ion-label>
-      <ion-input
-        #inputName
-        type="name"
-        placeholder="Digite seu nome"
-        minlength="3"
-        maxlength="100"
-        required
-      ></ion-input>
-    </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Seu ID</ion-label>
-      <ion-input
-        #inputID
-        type="text"
-        placeholder="Digite seu ID"
-        minlength="3"
-        maxlength="30"
-        required
-      ></ion-input>
-    </ion-item>
-  </form>
-  <ion-button expand="full" shape="round" (click)="onClickSaveDataUser()"
+    <form [formGroup]="formDataUser">
+      <ion-item>
+        <ion-label position="stacked">Seu nome</ion-label>
+        <ion-input
+          formControlName="name"
+          type="name"
+          placeholder="Digite seu nome"
+          minlength="3"
+          maxlength="100"
+          required
+        ></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked">Seu ID</ion-label>
+        <ion-input
+          formControlName="identification"
+          type="text"
+          placeholder="Digite seu ID"
+          minlength="3"
+          maxlength="30"
+          required
+        ></ion-input>
+      </ion-item>
+    </form>
+    <ion-button
+      (click)="onClickSaveDataUser()"
+      [disabled]="!formDataUser.valid"
+      expand="full"
+      shape="round"
       >Salvar Dados</ion-button
     >
+  </div>
 </ion-content>

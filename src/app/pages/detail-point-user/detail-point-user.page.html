@@ -1,0 +1,56 @@
+<ion-header mode="md">
+  <ion-toolbar>
+    <ion-buttons>
+      <ion-button (click)="onDismiss()">
+        <ion-icon slot="icon-only" name="arrow-back-outline"></ion-icon>
+      </ion-button>
+      <ion-title>Detalhes</ion-title>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content mode="md">
+  <ion-card>
+    <ion-card-content>
+      <ion-item>
+        <ion-label>Nome: </ion-label>
+        <ion-label
+          >{{ data?.user?.name != null ? (data?.user?.name) : 'Não foi definido'
+          }}</ion-label
+        >
+      </ion-item>
+      <ion-item>
+        <ion-label>Usuário: </ion-label>
+        <ion-label>{{ data?.user?.userName.split('@ti.com') }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>ID: </ion-label>
+        <ion-label
+          >{{ data?.user?.identification != null ? (data?.user?.identification)
+          : 'Não foi definido' }}</ion-label
+        >
+      </ion-item>
+      <ion-item>
+        <ion-label>Dia: </ion-label>
+        <ion-label>{{ data?.dateHour | date: 'dd/MM/YYYY' }}</ion-label>
+      </ion-item>
+      <ion-item>
+        <ion-label>Gestor: </ion-label>
+        <ion-label>{{ data?.manager?.userName }}</ion-label>
+      </ion-item>
+    </ion-card-content>
+  </ion-card>
+  <ion-card>
+    <ion-list>
+      <ion-list-header>
+        <ion-title>Pontos do Dia</ion-title>
+      </ion-list-header>
+      <ion-accordion-group>
+        <app-card-point
+          [listPoints]="listPoints"
+          [dataUserPoint]="data"
+        ></app-card-point>
+      </ion-accordion-group>
+    </ion-list>
+  </ion-card>
+</ion-content>

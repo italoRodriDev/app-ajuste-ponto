@@ -1,10 +1,14 @@
 <ion-content>
   <div class="background">
-    <div class="toolbar">
+    <div class="toolbar" [hidden]="!dataUser">
       <ion-item>
         <ion-label>
-          <h1>Olá {{ dataUser?.userName.split('@ti.com') }}</h1>
-          <p>{{ greetingDay }}</p>
+          <h1>
+            Olá {{ dataUser?.name != null ? (dataUser?.name.length > 15 ?
+            dataUser?.name.substring(0,15) + '...' : dataUser?.name) :
+            (dataUser?.userName.split('@ti.com')) }}
+          </h1>
+          <h1>{{ greetingDay }}</h1>
         </ion-label>
       </ion-item>
     </div>
@@ -99,31 +103,27 @@
           <ion-title>Pontos do dia</ion-title>
         </ion-list-header>
         <ion-accordion-group>
-          <ion-accordion *ngFor="let point of listPoints">
-            <ion-item class="card-point" slot="header">
-              <h1>{{ point?.status }}</h1>
-            </ion-item>
-            <ion-list slot="content">
-              <ion-label>
-                <h1>Detalhes</h1>
-                <p>
-                  Hora da assinatura: {{ point?.hourPoint | date: 'hh:mm' }}
-                </p>
-              </ion-label>
-            </ion-list>
-          </ion-accordion>
+          <app-card-point
+            [listPoints]="listPoints"
+            [dataUserPoint]="dataPoint"
+            [dataUser]="dataUser"
+          ></app-card-point>
         </ion-accordion-group>
       </ion-list>
+      <!---->
+      <br />
+      <ion-button (click)="onClickAdjustmentPoint()" expand="full" shape="round"
+        >Solicitar Ajuste de Ponto</ion-button
+      >
+      <br />
+      <ion-button (click)="onClickMyProfile()" expand="full" shape="round"
+        >Meu Perfil</ion-button
+      >
+      <br />
+      <ion-button (click)="onClickExitAccount()" expand="full" shape="round"
+        >Sair da Conta</ion-button
+      >
+      <br />
     </div>
-    <!---->
-    <br />
-    <ion-button (click)="onClickAdjustmentPoint()" expand="full" shape="round"
-      >Solicitar Ajuste de Ponto</ion-button
-    >
-    <br />
-    <ion-button (click)="onClickExitAccount()" expand="full" shape="round"
-      >Sair da Conta</ion-button
-    >
-    <br />
   </div>
 </ion-content>

@@ -1,16 +1,12 @@
-import { GetPointService } from './../point/get-point.service';
-import { User } from './../../models/user';
-import { AlertsService } from './../utils/alerts/alerts.service';
-import { Injectable, Type } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { FormGroup } from '@angular/forms';
 import { NavController } from '@ionic/angular';
 import { FormsService } from '../forms/forms.service';
-import { TypeUser } from 'src/app/enums/type-user';
-import { BehaviorSubject } from 'rxjs';
-import { Router } from '@angular/router';
-import * as moment from 'moment';
+import { User } from './../../models/user';
+import { UserService } from './../user/user.service';
+import { AlertsService } from './../utils/alerts/alerts.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,34 +18,14 @@ export class AuthService {
   token: boolean = false;
   idUser: string;
 
-  private bsUser = new BehaviorSubject<User>(null);
-  dataUser = this.bsUser.asObservable();
-
   constructor(
     private formsService: FormsService,
     private alertService: AlertsService,
-    private getPointService: GetPointService,
+    private userService: UserService,
     private fireAuth: AngularFireAuth,
     private fireDatabase: AngularFireDatabase,
-    private navCtrl: NavController,
-    private router: Router
-  ) {
-    this.getCurrentUser();
-  }
-
-  // -> Recuperando usuario atual
-  getCurrentUser() {
-    return new Promise<void>((resolve) => {
-      this.fireAuth.onAuthStateChanged((user) => {
-        if (user) {
-          this.getDataUser(user.uid);
-          resolve();
-        } else {
-          resolve();
-        }
-      });
-    });
-  }
+    private navCtrl: NavController
+  ) {}
 
   // -> Logando usuario com email e senha
   signUser() {
@@ -63,8 +39,6 @@ export class AuthService {
           this.fireAuth
             .signInWithEmailAndPassword(userName, password)
             .then((res) => {
-              const idUser = res.user.uid;
-              this.getDataUser(idUser);
               resolve();
             })
             .catch((error) => {
@@ -95,130 +69,14 @@ export class AuthService {
             typeUser: typeUser,
           });
 
-          this.saveDataUser(dataUser);
+          this.userService.saveDataUser(dataUser);
+          this.userService.validateTypeUser(dataUser.typeUser);
           resolve();
         })
         .catch((error) => {
-          console.log(error);
           this.validateErrorAuth(error.code);
         });
     });
-  }
-
-  // -> Recuperando dados do usuario
-  async getDataUser(idUser: string) {
-    await this.db
-      .ref('dataUser')
-      .child(idUser)
-      .once('value', (snapshot) => {
-        const data = snapshot.val();
-
-        if (data) {
-          const idPoint = moment().format('DDMMYYYY');
-          this.getPointService.getDataPointDayUser(idPoint, data);
-
-          switch (this.router.url) {
-            case '/login':
-              this.bsUser.next(data);
-              this.validateTypeUser(data.typeUser);
-              break;
-            case '/create-account':
-              this.bsUser.next(data);
-              this.validateTypeUser(data.typeUser);
-              break;
-            default:
-              this.bsUser.next(data);
-          }
-        }
-      });
-  }
-
-  // -> Salvando dados do usuario
-  async saveDataUser(dataUser: User) {
-    await this.db
-      .ref('dataUser')
-      .child(dataUser.idUser)
-      .update(dataUser)
-      .then(() => {
-        this.saveNewManager(dataUser);
-        this.validateTypeUser(dataUser.typeUser);
-        this.alertService.showAlert(
-          'Parabéns!',
-          'Sua conta foi criada com sucesso.',
-          'Fique a vontade para continuar explorando o app.'
-        );
-      })
-      .catch((error) => {
-        this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
-      });
-  }
-
-  // -> Atualizando dados do usuario
-  async updateDataManagerUser(dataUser: User, dataManager: User) {
-    await this.db
-      .ref('dataUser')
-      .child(dataUser.idUser)
-      .child('manager')
-      .update(dataManager)
-      .then(() => {
-        this.alertService.showAlert(
-          'Conta atualizada com sucesso!',
-          'Fique a vontade para continuar.',
-          ''
-        );
-      })
-      .catch((error) => {
-        this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
-      });
-  }
-
-  // -> Atualizando dados do usuario
-  async updateDataUser(dataUser: User) {
-    await this.db
-      .ref('dataUser')
-      .child(dataUser.idUser)
-      .update(dataUser)
-      .then(() => {
-        this.alertService.showAlert(
-          'Conta atualizada com sucesso!',
-          'Fique a vontade para continuar.',
-          ''
-        );
-      })
-      .catch((error) => {
-        this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
-      });
-  }
-
-  // -> Salvando dados do gestor
-  saveNewManager(dataUser: User) {
-    if (dataUser.typeUser == TypeUser.GESTOR) {
-      const idFire = this.fireDatabase.createPushId();
-
-      this.db
-        .ref('managers')
-        .child(idFire)
-        .update(dataUser)
-        .catch((error) => {
-          this.alertService.showToast(
-            'Algo saiu errado. Erro ao salvar gestor: ' + error.code
-          );
-        });
-    }
-  }
-
-  // -> Validando tipo de usuario
-  validateTypeUser(typeUser: string) {
-    console.log(typeUser);
-    switch (typeUser) {
-      case TypeUser.COLABORADOR:
-        this.navCtrl.navigateForward('home');
-        break;
-      case TypeUser.GESTOR:
-        this.navCtrl.navigateForward('manager');
-        break;
-    }
-    this.alertService.showToast('Login realizado com sucesso.');
   }
 
   // -> Validando excecoes firebase

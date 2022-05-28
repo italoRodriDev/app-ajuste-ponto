@@ -38,6 +38,12 @@ export class FormsService {
     password: this.passValidator,
   });
 
+  // -> Formulario dados do usuario
+  formDataUser: FormGroup = this.fb.group({
+    name: this.nameValidator,
+    identification: this.reqValidator
+  }); 
+
   // -> Formulario de ajuste de ponto
   formAdjustmentPoint: FormGroup = this.fb.group({
     id: [],

@@ -5,41 +5,65 @@
   </div>
   <div class="cloud-bar"></div>
   <div class="background-bottom">
-        <form [formGroup]="formSignUp">
-          <ion-item>
-            <ion-segment formControlName="type" value="COLABORADOR">
-              <ion-segment-button value="COLABORADOR">
-                <ion-label>Colaborador</ion-label>
-              </ion-segment-button>
-              <ion-segment-button value="GESTOR">
-                <ion-label>Gestor</ion-label>
-              </ion-segment-button>
-            </ion-segment>
-          </ion-item>
-        
-          
-          <div [hidden]="formSignUp.controls.tokenValid.value == true">
-            <ion-item>
-              <ion-label position="floating">Token</ion-label>
-              <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
-              <ion-input formControlName="token" placeholder="Digite o token" type="password" minlength="6" maxlength="6"></ion-input>
-            </ion-item>
-          </div>
-          <div *ngIf="formSignUp.controls.tokenValid.value == true" >
-            <ion-item>
-              <ion-label position="floating">Usuário</ion-label>
-              <ion-icon color="primary" slot="start" name="person"></ion-icon>
-              <ion-input formControlName="userName" placeholder="Ex: italo_021" type="text" minlength="3" maxlength="100"></ion-input>
-            </ion-item>
-            <ion-item>
-              <ion-label position="floating">Senha</ion-label>
-              <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
-              <ion-input formControlName="password" placeholder="Defina sua senha" type="password" minlength="8" maxlength="8"></ion-input>
-            </ion-item>
-          </div>
-          
-          <br/>
-          <ion-button (click)="onClickCreateAccount()" [disabled]="!formSignUp.valid" expand="full" color="primary" shape="round">Cadastrar</ion-button>
-        </form>
+    <form [formGroup]="formSignUp">
+      <ion-item>
+        <ion-segment formControlName="type" value="COLABORADOR">
+          <ion-segment-button value="COLABORADOR">
+            <ion-label>Colaborador</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="GESTOR">
+            <ion-label>Gestor</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-item>
+
+      <div [hidden]="formSignUp.controls.tokenValid.value == true">
+        <ion-item>
+          <ion-label position="floating">Token</ion-label>
+          <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+          <ion-input
+            formControlName="token"
+            placeholder="Digite o token"
+            type="password"
+            minlength="6"
+            maxlength="6"
+          ></ion-input>
+        </ion-item>
+      </div>
+      <div *ngIf="formSignUp.controls.tokenValid.value == true">
+        <ion-item>
+          <ion-label position="floating">Usuário</ion-label>
+          <ion-icon color="primary" slot="start" name="person"></ion-icon>
+          <ion-input
+            formControlName="userName"
+            placeholder="Ex: italo_021"
+            type="text"
+            minlength="3"
+            maxlength="100"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="floating">Senha</ion-label>
+          <ion-icon color="primary" slot="start" name="lock-closed"></ion-icon>
+          <ion-input
+            formControlName="password"
+            placeholder="Defina sua senha"
+            type="password"
+            minlength="8"
+            maxlength="8"
+          ></ion-input>
+        </ion-item>
+      </div>
+
+      <br />
+      <ion-button
+        (click)="onClickCreateAccount()"
+        [disabled]="!formSignUp.valid"
+        expand="full"
+        color="primary"
+        shape="round"
+        >Cadastrar</ion-button
+      >
+    </form>
   </div>
 </ion-content>

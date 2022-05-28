@@ -5,18 +5,18 @@ import { FormsModule } from '@angular/forms';
 
 import { IonicModule } from '@ionic/angular';
 
-import { ManagerPageRoutingModule } from './manager-routing.module';
+import { DetailPointUserPageRoutingModule } from './detail-point-user-routing.module';
 
-import { ManagerPage } from './manager.page';
+import { DetailPointUserPage } from './detail-point-user.page';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    ManagerPageRoutingModule,
+    DetailPointUserPageRoutingModule,
     SharedComponentsModule
   ],
-  declarations: [ManagerPage]
+  declarations: [DetailPointUserPage]
 })
-export class ManagerPageModule {}
+export class DetailPointUserPageModule {}

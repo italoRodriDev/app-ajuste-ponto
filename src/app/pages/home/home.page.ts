@@ -1,3 +1,5 @@
+import { ConfigPage } from './../config/config.page';
+import { UserService } from './../../services/user/user.service';
 import { AdjustmentPointPage } from './../adjustment-point/adjustment-point.page';
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { IonButton, IonSelect, ModalController } from '@ionic/angular';
@@ -42,7 +44,7 @@ export class HomePage {
 
   constructor(
     private authService: AuthService,
-    private alertService: AlertsService,
+    private userService: UserService,
     private setPointService: SetPointService,
     private getPointService: GetPointService,
     private changeDetector: ChangeDetectorRef,
@@ -63,7 +65,7 @@ export class HomePage {
   // -> Recuperando dados do servico
   getDataService() {
     this.getMessegeTimeDay();
-    this.userSubs = this.authService.dataUser.subscribe((userData: User) => {
+    this.userSubs = this.userService.dataUser.subscribe((userData: User) => {
       this.dataUser = userData;
     });
 
@@ -293,8 +295,17 @@ export class HomePage {
     await modal.present();
   }
 
+  // -> Mostrar meu perfil
+  async onClickMyProfile() {
+    const modal = await this.modalCtrl.create({
+      component: ConfigPage,
+      mode: 'ios',
+    });
+    await modal.present();
+  }
+
   // -> Clique em sair da conta
-  onClickExitAccount(){
+  onClickExitAccount() {
     this.authService.singOutAccount();
   }
 }

@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user/user.service';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { AlertsService } from './../../services/utils/alerts/alerts.service';
 import { Subscription } from 'rxjs';
@@ -34,7 +35,7 @@ export class AdjustmentPointPage implements OnInit {
   constructor(
     private fireDatabase: AngularFireDatabase,
     private formService: FormsService,
-    private authService: AuthService,
+    private userService: UserService,
     private alertService: AlertsService,
     private modalCtrl: ModalController,
     private adjustmentService: AdjustmentPointService
@@ -54,7 +55,7 @@ export class AdjustmentPointPage implements OnInit {
 
   // -> Recuperando dados do servico
   getDataService() {
-    this.userSubscription = this.authService.dataUser.subscribe(
+    this.userSubscription = this.userService.dataUser.subscribe(
       (userData) => (this.dataUser = userData)
     );
   }

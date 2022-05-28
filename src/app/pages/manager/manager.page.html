@@ -1,15 +1,30 @@
 <ion-header>
-  <ion-toolbar>
+  <ion-toolbar color="primary">
     <ion-buttons>
-      <ion-title>Painel de Gestão</ion-title>
+      <ion-title></ion-title>
       <ion-button (click)="showModalSettings()">
-        <ion-icon slot="icon-only" name="settings-outline"></ion-icon>
+        <ion-icon slot="icon-only" name="person-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="onClickExit()">
+        <ion-icon slot="icon-only" name="exit-outline"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
+  <div class="toolbar">
+    <ion-item>
+      <ion-label>
+        <h1>
+          Olá! {{ dataUser?.name != null ? (dataUser?.name.length > 15 ?
+          dataUser?.name.substring(0,15) + '...' : dataUser?.name) :
+          (dataUser?.userName.split('@ti.com')) }}
+        </h1>
+        <h1>{{ greetingDay }}</h1>
+      </ion-label>
+    </ion-item>
+  </div>
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -41,22 +56,53 @@
         </ion-card>
       </ion-col>
       <ion-col>
-        <ion-searchbar mode="ios" placeholder="Buscar por nome"></ion-searchbar>
-        <ion-list>
-          <ion-list-header>
-            <ion-title>Solicitações de Ajuste</ion-title>
-          </ion-list-header>
-          <ion-card button (click)="onClickDetailAdjustment(item)" *ngFor="let item of listAdjustment">
-            <ion-card-content>
-              <ion-card-title>{{ item.nameUser }}</ion-card-title>
-              <ion-card-subtitle
-                >Data da solicitação: {{ item.dateSolicitation | date:
-                'dd/MM/YYYY' }}</ion-card-subtitle
+        <ion-card>
+          <ion-card-content>
+            <ion-searchbar
+              (ionChange)="onSearchAdjustment($event)"
+              mode="ios"
+              placeholder="Buscar por nome"
+            ></ion-searchbar>
+            <ion-list>
+              <ion-list-header>
+                <ion-label>
+                  <ion-title>Solicitações de Ajuste</ion-title>
+                  <p>Solicitações de ajuste de ponto do dia.</p>
+                </ion-label>
+              </ion-list-header>
+              <app-card-adjustment-manager
+                *ngFor="let item of listAdjustment"
+                (click)="onClickDetailAdjustment(item)"
+                [data]="item"
               >
-            </ion-card-content>
-          </ion-card>
-        </ion-list>
+              </app-card-adjustment-manager>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-card-content>
+            <ion-list>
+              <ion-list-header>
+                <ion-label>
+                  <ion-title>Pontos do Dia</ion-title>
+                  <p>Assinaturas de ponto em tempo real.</p>
+                </ion-label>
+              </ion-list-header>
+              <app-card-point-day-manager
+                *ngFor="let item of listAllPoints"
+                [data]="item"
+                [currentDateID]="currentDate"
+              >
+              </app-card-point-day-manager>
+            </ion-list>
+          </ion-card-content>
+        </ion-card>
       </ion-col>
     </ion-row>
+  </ion-grid>
+  <ion-grid>
+    <ion-row> </ion-row>
   </ion-grid>
 </ion-content>

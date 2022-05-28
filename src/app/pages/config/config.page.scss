@@ -1,3 +1,16 @@
+.toolbar {
+    height: 100px;
+    border-bottom-left-radius: 40px;
+    border-bottom-right-radius: 40px;
+    background-color: white;
+    h1 {
+        font-size: 22px;
+    }
+    ion-item {
+        padding: none;
+    }
+}
+
 ion-button{
     margin: 10%;
 }

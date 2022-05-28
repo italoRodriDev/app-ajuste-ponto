@@ -110,4 +110,62 @@ export class SetPointService {
       'Fique a vontade para continuar.'
     );
   }
+
+  // -> Salvando ajuste no ponto
+  saveAdjustmentPoint(
+    dataUsePoint: PointUserDay,
+    dataPoint: Point,
+    newDate: string
+  ) {
+    const newDatePoint = moment(newDate).format();
+    const label = `
+    Ajustado de ${moment(dataPoint.hourPoint).format('hh:mm a DD/MM/YY')}
+    para ${moment(newDatePoint).format()}
+    `;
+
+    this.db
+      .ref('pointsDay')
+      .child(dataUsePoint.idUserPoint)
+      .child(dataUsePoint.idUser)
+      .child(dataPoint.idPoint)
+      .update({ hourPoint: newDatePoint, adjustment: label })
+      .then(() => {
+        this.alertService.showAlert(
+          'Ponto ajustado com sucesso!',
+          'Fique a vontadde para continuar!',
+          'As mudanças podem demorar um pouco para aparecer.'
+        );
+      })
+      .catch(() => {
+        this.alertService.showAlert(
+          'Ocorreu um erro ao atualizar o ponto!',
+          'Contato o suporte do sistema.',
+          'Verifique também sua conexão.'
+        );
+      });
+  }
+
+  // -> Excluindo ponto
+  RemovePointAdjustment(dataUsePoint: PointUserDay, dataPoint: Point) {
+    this.db
+      .ref('pointsDay')
+      .child(dataUsePoint.idUserPoint)
+      .child(dataUsePoint.idUser)
+      .child(dataPoint.idPoint)
+      .remove()
+      .then(() => {
+        this.alertService.showAlert(
+          'Ponto excluido com sucesso!',
+          'Fique a vontadde para continuar.',
+          'As mudanças podem demorar um pouco para aparecer.'
+        );
+      })
+      .catch(() => {
+        this.alertService.showAlert(
+          'Ocorreu um erro ao excluir o ponto!',
+          'Contato o suporte do sistema.',
+          'Verifique também sua conexão.'
+        );
+      });
+  }
 }

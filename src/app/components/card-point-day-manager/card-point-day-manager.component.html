@@ -1,0 +1,33 @@
+<ion-card button (click)="onToggle()">
+  <ion-card-header>
+    <ion-card-title>{{
+      data?.user?.name != null ? data?.user?.name : data?.user?.userName
+    }}</ion-card-title>
+    <ion-card-subtitle
+      >Gestor:
+      {{
+        data?.user?.manager?.name != null
+          ? data?.user?.manager.name
+          : data?.user?.manager?.userName
+      }}</ion-card-subtitle
+    >
+  </ion-card-header>
+  <ion-card-content [hidden]="toggleBtn">
+    <ion-breadcrumbs>
+      <ion-breadcrumb *ngFor="let item of listPointsDay">
+        <ion-icon name="alarm-outline"></ion-icon>
+        {{ item.hourPoint | date: "hh:mm a" }} -
+        {{ item.status }}
+        <ion-icon name="chevron-forward-outline"></ion-icon>
+      </ion-breadcrumb>
+    </ion-breadcrumbs>
+    <ion-button
+      (click)="onClickShowDetail()"
+      shape="round"
+      size="small"
+      color="tertiary"
+    >
+      <ion-label color="light">Detalhes</ion-label>
+    </ion-button>
+  </ion-card-content>
+</ion-card>

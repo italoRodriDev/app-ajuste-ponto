@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'detail-adjustment',
     loadChildren: () => import('./pages/detail-adjustment/detail-adjustment.module').then( m => m.DetailAdjustmentPageModule)
   },
+  {
+    path: 'detail-point-user',
+    loadChildren: () => import('./pages/detail-point-user/detail-point-user.module').then( m => m.DetailPointUserPageModule)
+  },
 ];
 
 @NgModule({
