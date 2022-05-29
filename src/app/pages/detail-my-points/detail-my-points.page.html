@@ -1,0 +1,145 @@
+<ion-content mode="md">
+  <div class="background">
+    <div class="toolbar">
+      <ion-item>
+        <ion-label>
+          <h1>Ajuste de Ponto</h1>
+          <p>Ajuste seu ponto...</p>
+        </ion-label>
+      </ion-item>
+      <ion-button (click)="onDismiss()" color="tertiary" shape="round">
+        <ion-icon color="light" name="chevron-down-circle"></ion-icon>
+      </ion-button>
+    </div>
+    <ion-card>
+      <ion-card-header>
+        <ion-button
+          [hidden]="!toggleSave"
+          (click)="onClickSaveAllAdjustments()"
+          color="tertiary"
+          shape="round"
+        >
+          <ion-label color="light">Enviar Solicitação</ion-label>
+        </ion-button>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-reorder-group
+          disabled="false"
+          (ionItemReorder)="doReorder($event)"
+        >
+          <!---->
+          <ion-item
+            (click)="onClickPoint(item)"
+            *ngFor="let item of listPointsJorney; let index = index"
+          >
+            <ion-label
+              >{{ index + 1 }}º - {{ item.hourPoint | date: 'HH:mm a' }} - {{
+              item.status }}</ion-label
+            >
+            <ion-reorder></ion-reorder>
+          </ion-item>
+          <!---->
+        </ion-reorder-group>
+        <ion-button
+          (click)="onToggleNewPoint()"
+          *ngIf="toggleNewPoint == false"
+          shape="round"
+          size="small"
+          >Adicionar Novo Ponto</ion-button
+        >
+      </ion-card-content>
+    </ion-card>
+    <!--Editar Ponto-->
+    <ion-card [hidden]="!editPoint || toggleNewPoint == true">
+      <ion-card-header>
+        <ion-card-title>Dados do Ponto</ion-card-title>
+        <br />
+        <ion-label>
+          <ion-title>Ponto: {{ editPoint?.status }}</ion-title>
+          <ion-title
+            >Ajustado Para: {{ editPoint?.hourPoint | date: 'HH:mm dd/MM'
+            }}</ion-title
+          >
+        </ion-label>
+      </ion-card-header>
+      <ion-card-content>
+        <div class="container-date-time">
+          <ion-datetime
+            (ionChange)="onChangeDateTime($event)"
+            locale="pt-BR"
+            presentation="date-time"
+            [value]="editPoint?.hourPoint"
+          ></ion-datetime>
+        </div>
+      </ion-card-content>
+      <ion-card-content>
+        <ion-button
+          (click)="onClickCancelEditPoint()"
+          shape="round"
+          color="primary"
+          size="small"
+          >Cancelar Edição</ion-button
+        >
+        <ion-button
+          (click)="onClickRemovePoint()"
+          shape="round"
+          color="danger"
+          size="small"
+          >Excluir Ponto</ion-button
+        >
+      </ion-card-content>
+    </ion-card>
+    <!--Cadastrar Ponto-->
+    <ion-card [hidden]="toggleNewPoint == false">
+      <ion-card-header>
+        <ion-card-title>Adicionar Novo Ponto</ion-card-title>
+        <ion-card-subtitle>Adicione um novo ponto ao dia.</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <form [formGroup]="formAddPoint">
+          <ion-item>
+            <ion-label position="stacked">Selecione uma opção</ion-label>
+            <ion-select
+              formControlName="status"
+              placeholder="Selecione uma opção"
+              interface="popover"
+              cancelText="Cancelar"
+              okText="Confirmar"
+            >
+              <ion-select-option
+                *ngFor="let typePoint of listTypePoints"
+                [value]="typePoint"
+                >{{ typePoint }}</ion-select-option
+              >
+            </ion-select>
+          </ion-item>
+          <div class="container-date-time">
+            <ion-datetime
+              formControlName="hourPoint"
+              locale="pt-BR"
+              presentation="date-time"
+              [value]="editPoint?.hourPoint"
+            ></ion-datetime>
+          </div>
+        </form>
+      </ion-card-content>
+      <ion-card-content>
+        <ion-button
+          (click)="onClickAddPoint()"
+          [disabled]="!formAddPoint.valid"
+          shape="round"
+          color="primary"
+          size="small"
+          >Adicionar</ion-button
+        >
+        <ion-button
+          (click)="onToggleNewPoint()"
+          shape="round"
+          color="danger"
+          size="small"
+          >Cancelar</ion-button
+        >
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

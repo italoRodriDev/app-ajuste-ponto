@@ -83,14 +83,14 @@ export class AuthService {
   validateErrorAuth(res) {
     switch (res) {
       case 'auth/invalid-email':
-        this.alertService.showAlert('Ops! Digite um e-mail válido.', '', '');
+        this.alertService.showAlert('Ops! Digite um usuário válido.', '', '');
         break;
       case 'auth/user-disabled':
         this.alertService.showAlert('Ops! Seu acesso foi desativado.', '', '');
 
       case 'auth/user-not-found':
         this.alertService.showAlert(
-          'Ops! Esse e-mail ainda não foi cadastrado.',
+          'Ops! Esse usuário ainda não foi cadastrado.',
           '',
           ''
         );
@@ -98,7 +98,7 @@ export class AuthService {
         break;
       case 'auth/wrong-password':
         this.alertService.showAlert(
-          'Ops! Seu e-mail ou senha não batem. Verifique e tente novamente.',
+          'Ops! Seu usuário ou senha não batem. Verifique e tente novamente.',
           '',
           ''
         );
@@ -106,7 +106,7 @@ export class AuthService {
         break;
       case 'auth/email-not-verified':
         this.alertService.showAlert(
-          'Ops! Seu e-mail ainda não foi verificado, enviamos um e-email de verificação para você.',
+          'Ops! Seu usuário ainda não foi verificado, enviamos um e-email de verificação para você.',
           '',
           ''
         );

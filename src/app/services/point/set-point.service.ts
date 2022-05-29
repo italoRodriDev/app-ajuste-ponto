@@ -1,11 +1,11 @@
-import { PointUserDay } from './../../models/point-user-day';
-import { TypePoint } from './../../enums/type-point';
-import { AlertsService } from './../utils/alerts/alerts.service';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { Injectable } from '@angular/core';
-import { User } from 'src/app/models/user';
-import { Point } from 'src/app/models/point';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
 import * as moment from 'moment';
+import { Point } from 'src/app/models/point';
+import { User } from 'src/app/models/user';
+import { TypePoint } from './../../enums/type-point';
+import { PointUserDay } from './../../models/point-user-day';
+import { AlertsService } from './../utils/alerts/alerts.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +19,12 @@ export class SetPointService {
   ) {}
 
   // -> Marcando ponto de inicio de jornada
-  setPointJorney(idPoint: string, userData: User, typePoint: TypePoint) {
+  setPointJorney(
+    idPoint: string,
+    userData: User,
+    typePoint: TypePoint,
+    loggedTime: string
+  ) {
     const currentDate = moment().format();
 
     if (userData.manager != null) {
@@ -28,6 +33,8 @@ export class SetPointService {
         idUser: userData.idUser,
         dateHour: currentDate,
         user: userData,
+        finishJorney: typePoint == TypePoint.SAIDA ? true : false,
+        loggedTime: loggedTime,
         manager: userData.manager,
       });
 
@@ -58,13 +65,14 @@ export class SetPointService {
   // -> Inserindo ponto
   setPointDay(idPointDay, typePoint: TypePoint, userData: User) {
     const idFire = this.fireDatabase.createPushId();
+    const currentDate = moment().format();
 
     const data = new Point({
       idPoint: idFire,
       idPointUser: idPointDay,
       status: typePoint,
-      dateDay: moment().format(),
-      hourPoint: moment().format(),
+      dateDay: currentDate,
+      hourPoint: currentDate,
     });
 
     this.db

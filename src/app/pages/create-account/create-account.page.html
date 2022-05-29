@@ -54,15 +54,22 @@
           ></ion-input>
         </ion-item>
       </div>
-
       <br />
       <ion-button
         (click)="onClickCreateAccount()"
-        [disabled]="!formSignUp.valid"
+ 
         expand="full"
         color="primary"
         shape="round"
         >Cadastrar</ion-button
+      >
+      <br />
+      <ion-button
+        routerLink="/login"
+        expand="full"
+        color="primary"
+        shape="round"
+        >Voltar</ion-button
       >
     </form>
   </div>

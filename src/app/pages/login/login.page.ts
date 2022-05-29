@@ -16,7 +16,9 @@ export class LoginPage implements OnInit {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.formSign.reset();
+  }
 
   onClickLogin() {
     this.authService.signUser();

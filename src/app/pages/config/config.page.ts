@@ -91,14 +91,16 @@ export class ConfigPage implements OnInit {
   onClickSaveDataUser() {
     const name = this.formDataUser.controls.name.value;
     const identification = this.formDataUser.controls.identification.value;
+    const typeUser = this.dataUser.typeUser;
+    const idUser = this.dataUser.idUser;
 
     const dataUser = new User({
-      idUser: this.dataUser.idUser,
+      idUser: idUser,
       name: name,
       identification: identification,
     });
 
-    this.userService.updateDataUser(dataUser);
+    this.userService.updateDataUser(dataUser, typeUser);
   }
 
   // -> Salvar dados do gestor do colaborador

@@ -26,7 +26,7 @@ export class DetailAdjustmentPage implements OnInit {
   ) {}
 
   ngOnInit() {
-    
+    console.log(this.data);
   }
 
   // -> Clique em ver evidencia
@@ -39,8 +39,13 @@ export class DetailAdjustmentPage implements OnInit {
   onChangeStatus(ev) {
     const status = ev.detail.value;
     const dataUser = this.data?.user;
+    const dataAdj = this.data;
     if (status && dataUser) {
-      this.adjustmentPointService.updateStatusAdjustment(dataUser, status);
+      this.adjustmentPointService.updateStatusAdjustment(
+        dataAdj,
+        dataUser,
+        status
+      );
     }
   }
 

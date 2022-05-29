@@ -1,37 +1,28 @@
 <ion-accordion *ngFor="let point of listPoints">
   <ion-item class="card-point" slot="header">
-    <h1 class="title">
-      {{ point?.hourPoint | date: "hh:mm a" }} {{ point?.status }}
-    </h1>
+    <ion-title class="title">
+    {{ point?.status }}
+    </ion-title>
   </ion-item>
   <ion-list slot="content">
     <div class="container-ajust">
-      <form>
-        <ion-datetime
-          (ionChange)="onChangeDateTime($event)"
-          #dateTime
-          showDefaultTimeLabe="false"
-          [time-label]="'assss'"
-          locale="pt-BR"
-          presentation="date-time"
-          [value]="point?.hourPoint"
-        ></ion-datetime>
-      </form>
-      <div *ngIf="dataUser.typeUser != 'COLABORADOR'" >
-        <ion-button
-          (click)="onClickSaveEditPoint(point)"
-          shape="round"
-          size="small"
-          >Salvar</ion-button
+      <ion-breadcrumbs>
+        <ion-breadcrumb
+          *ngFor="let item of listPoints"
+          [color]="point == item ? 'primary' : ''"
         >
-        <ion-button
-          (click)="onClickRemovePoint(point)"
-          color="danger"
-          shape="round"
-          size="small"
-          >Excluir</ion-button
-        >
-      </div>
+          <ion-icon
+            [color]="point == item ? 'primary' : ''"
+            name="alarm-outline"
+          ></ion-icon>
+          {{ item.hourPoint | date: "hh:mm a" }} -
+          {{ item.status }}
+          <ion-icon
+            [color]="point == item ? 'primary' : ''"
+            name="chevron-forward-outline"
+          ></ion-icon>
+        </ion-breadcrumb>
+      </ion-breadcrumbs>
     </div>
   </ion-list>
 </ion-accordion>

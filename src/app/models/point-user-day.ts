@@ -3,6 +3,8 @@ export class PointUserDay {
     idUserPoint: string;
     dateHour: string;
     idUser: string;
+    loggedTime: string;
+    finishJorney: boolean;
     manager: User;
     user: User;
     constructor(obj){

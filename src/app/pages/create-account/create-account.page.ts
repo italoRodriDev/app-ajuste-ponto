@@ -23,7 +23,9 @@ export class CreateAccountPage implements OnInit {
     private authService: AuthService
   ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.formSignUp.reset();
+  }
 
   ionViewDidEnter() {
     this.onChangeModeManager();

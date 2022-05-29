@@ -91,7 +91,12 @@
         <h1 class="label-tempo-logado">Tempo Logado</h1>
         <div class="container-timer">
           <div class="timer">
-            <h1>{{ loggedTime }}</h1>
+              <div *ngIf="jorneyDay?.finishJorney == true">
+                <h1>{{ jorneyDay?.loggedTime }}</h1>
+              </div>
+              <div *ngIf="jorneyDay == null || jorneyDay?.finishJorney == false" >
+                <h1>{{ loggedTime }}</h1>
+              </div>
             <p>/6h:20min</p>
           </div>
         </div>
@@ -105,19 +110,23 @@
         <ion-accordion-group>
           <app-card-point
             [listPoints]="listPoints"
-            [dataUserPoint]="dataPoint"
+            [dataUserPoint]="jorneyDay"
             [dataUser]="dataUser"
           ></app-card-point>
         </ion-accordion-group>
       </ion-list>
       <!---->
       <br />
-      <ion-button (click)="onClickAdjustmentPoint()" expand="full" shape="round"
-        >Solicitar Ajuste de Ponto</ion-button
-      >
-      <br />
       <ion-button (click)="onClickMyProfile()" expand="full" shape="round"
         >Meu Perfil</ion-button
+      >
+      <br />
+      <ion-button (click)="onClickDetailMyPoint()" expand="full" shape="round"
+        >Ajuste de Ponto</ion-button
+      >
+      <br />
+      <ion-button (click)="onClickAdjustmentPoint()" expand="full" shape="round"
+        >Solicitar Ajuste</ion-button
       >
       <br />
       <ion-button (click)="onClickExitAccount()" expand="full" shape="round"

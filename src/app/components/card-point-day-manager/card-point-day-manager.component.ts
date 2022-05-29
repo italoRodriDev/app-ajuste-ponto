@@ -30,7 +30,7 @@ export class CardPointDayManagerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.getPointsUser();
+    //this.getPointsUser();
   }
 
   // -> Recuperando dados do servico

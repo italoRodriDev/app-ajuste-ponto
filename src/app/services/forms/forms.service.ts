@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import * as moment from 'moment';
 const EMPTY_REGEX = /(.|\s)*\S(.|\s)*/;
 
 @Injectable({
@@ -43,6 +42,15 @@ export class FormsService {
     name: this.nameValidator,
     identification: this.reqValidator
   }); 
+
+  // -> Formulario adicionar pontos
+  formAddPoint: FormGroup = this.fb.group({
+    dateDay: this.reqValidator,
+    hourPoint: this.reqValidator,
+    idPoint: this.reqValidator,
+    idPointUser:this.reqValidator,
+    status: this.reqValidator
+  });
 
   // -> Formulario de ajuste de ponto
   formAdjustmentPoint: FormGroup = this.fb.group({

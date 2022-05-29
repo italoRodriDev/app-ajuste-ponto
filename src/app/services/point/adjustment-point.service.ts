@@ -28,7 +28,7 @@ export class AdjustmentPointService {
   }
 
   // -> Salvando dados do ajuste
-  saveDataAdjustment(userData: User, listAdjustment: Array<any>) {
+  saveDataAdjustment(typeAdjustment, userData: User, listAdjustment: Array<any>) {
     const id = moment().format('DDMMYYYY');
     const currentDate = moment().format();
 
@@ -38,6 +38,7 @@ export class AdjustmentPointService {
       dateSolicitation: currentDate,
       nameUser: userData.userName,
       user: userData,
+      typeAdj: typeAdjustment,
       listPoints: listAdjustment,
     });
 
@@ -63,12 +64,11 @@ export class AdjustmentPointService {
   }
 
   // -> Atualizando status do ajuste
-  updateStatusAdjustment(userData: User, status: TypeStatusAdjustment) {
-    const id = moment().format('DDMMYYYY');
-
+  updateStatusAdjustment(pointAdj: PointAdjustment,userData: User, status: TypeStatusAdjustment) {
+    
     this.db
       .ref('adjustment')
-      .child(id)
+      .child(pointAdj.idAdj)
       .child(userData.idUser)
       .update({ status: status })
       .then(() => {

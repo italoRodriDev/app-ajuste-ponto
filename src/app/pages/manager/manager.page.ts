@@ -97,15 +97,17 @@ export class ManagerPage implements OnInit {
 
     this.adjSubs = this.adjustmentService.listAdjustment.subscribe(
       (listAdjustment) => {
-        this.cleanList();
+        this.cleanList('AJUSTES_PONTO');
         this.listAdjustment = listAdjustment;
         this.listAdjustmentFilter = listAdjustment;
+        this.changeDetector.detectChanges();
       }
     );
     this.allPointsSubs = this.getPointService.listAllPoints.subscribe(
       (listAllPoints) => {
-        this.cleanList();
+        this.cleanList('PONTOS_DIA');
         this.listAllPoints = listAllPoints;
+        this.changeDetector.detectChanges();
       }
     );
   }
@@ -114,11 +116,11 @@ export class ManagerPage implements OnInit {
   onSelectDate(ev) {
     const value = ev.detail.value;
     if (value) {
-      this.cleanList();
       this.dateSelected = value;
       const date = moment(value).format('DDMMYYYY');
       this.adjustmentService.getAllAdjustment(date, null);
       this.getPointService.getPointAllUsers(date, this.dataUser);
+      this.cleanList('AJUSTES_PONTO');
     }
   }
 
@@ -149,10 +151,11 @@ export class ManagerPage implements OnInit {
 
   // -> Clique em mostrar detalhes do ajuste
   async onClickDetailAdjustment(itemList) {
+   
     const modal = await this.modalCtrl.create({
       component: DetailAdjustmentPage,
       componentProps: { data: itemList },
-      mode: 'ios',
+      mode: 'ios'
     });
     await modal.present();
   }
@@ -167,11 +170,23 @@ export class ManagerPage implements OnInit {
   }
 
   // -> Limpando listas
-  cleanList() {
-    while (this.listAdjustment.length) {
-      this.listAdjustment.pop();
-      this.changeDetector.detectChanges();
+  cleanList(type) {
+
+    switch(type){
+      case 'AJUSTES_PONTO':
+        while (this.listAdjustment.length) {
+          this.listAdjustment.pop();
+          this.changeDetector.detectChanges();
+        }
+        break;
+      case 'PONTOS_DIA':
+        while (this.listAllPoints.length) {
+          this.listAllPoints.pop();
+          this.changeDetector.detectChanges();
+        }
+        break;  
     }
+    
   }
 
   // -> Clique em sair da conta

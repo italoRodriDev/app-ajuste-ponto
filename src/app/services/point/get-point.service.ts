@@ -27,20 +27,22 @@ export class GetPointService {
   getDataPointDayUser(idPoint, userData: User) {
     this.alertService.showLoadig().then((loading) => {
       loading.present();
-      this.db
-        .ref('pointUser')
-        .child(idPoint)
-        .child(userData?.idUser)
-        .on('value', (snapshot) => {
-          const data = snapshot.val();
+      if (userData.idUser) {
+        this.db
+          .ref('pointUser')
+          .child(idPoint)
+          .child(userData?.idUser)
+          .on('value', (snapshot) => {
+            const data = snapshot.val();
 
-          if (data) {
-            this.bsDataPoint.next(null);
-            this.bsDataPoint.next(data);
-            this.getAllPointsDay(idPoint, userData);
-          }
-          loading.dismiss();
-        });
+            if (data) {
+              this.bsDataPoint.next(null);
+              this.bsDataPoint.next(data);
+              this.getAllPointsDay(idPoint, userData);
+            }
+            loading.dismiss();
+          });
+      }
     });
   }
 

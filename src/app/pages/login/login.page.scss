@@ -1,28 +1,39 @@
+// -> Dispositivo com tela de no max 900px
+@media only screen and (max-device-width: 900.98px) {
+    .cloud-bar {
+        height: 100px;
+        background-repeat: no-repeat;
+        min-width: 100%;
+        background-image: url(/assets/images/nuvem.svg);
+    }
+}
 
-.background-top{
-    
+// -> Dispositivo de no minimo 1080px
+@media (min-device-width: 1080px) {
+    .cloud-bar {
+        height: 100px;
+        background-repeat: no-repeat;
+        min-width: 100%;
+        background-image: none;
+    }
+}
+
+.background-top {
     height: 20%;
-    h1{
+    h1 {
         font-weight: bold;
         text-align: center;
         padding-top: 10%;
     }
 }
 
-.cloud-bar{    
-    height: 100px;
-    background-repeat: no-repeat;
-    min-width: 100%;
-    background-image: url(/assets/images/nuvem.svg);
-}
-
-.background-bottom{
+.background-bottom {
     min-height: 100%;
-    background-color:white;
-    ion-button{
-        margin-top: 10%;
-        margin-left: 10%;
-        margin-right: 10%;
+    background-color: white;
+    ion-button {
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 20px;
+        padding-right: 20px;
     }
-    
 }

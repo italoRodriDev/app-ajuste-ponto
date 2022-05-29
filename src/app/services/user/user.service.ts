@@ -113,6 +113,9 @@ export class UserService {
           'Fique a vontade para continuar.',
           ''
         );
+        this.fireAuth.signOut().then(() => {
+          this.navCtrl.navigateBack('login');
+        });
       })
       .catch((error) => {
         this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
@@ -120,7 +123,7 @@ export class UserService {
   }
 
   // -> Atualizando dados do usuario
-  async updateDataUser(dataUser: User) {
+  async updateDataUser(dataUser: User, typeUser: string) {
     await this.db
       .ref('dataUser')
       .child(dataUser.idUser)
@@ -131,6 +134,11 @@ export class UserService {
           'Fique a vontade para continuar.',
           ''
         );
+
+        if(typeUser == TypeUser.GESTOR){
+          //this.saveNewManager(dataUser);
+        }
+
       })
       .catch((error) => {
         this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);

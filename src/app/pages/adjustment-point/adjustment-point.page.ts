@@ -1,3 +1,5 @@
+import { TypeUser } from './../../enums/type-user';
+import { PointUserDay } from './../../models/point-user-day';
 import { UserService } from './../../services/user/user.service';
 import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { AlertsService } from './../../services/utils/alerts/alerts.service';
@@ -6,11 +8,12 @@ import { AuthService } from 'src/app/services/authentication/auth.service';
 import { TypePointAdjustment } from './../../enums/type-point-adjustment';
 import { FormGroup } from '@angular/forms';
 import { FormsService } from 'src/app/services/forms/forms.service';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { IonContent, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
 import { AdjustmentPointService } from 'src/app/services/point/adjustment-point.service';
 import { User } from 'src/app/models/user';
+import { Point } from 'src/app/models/point';
 
 @Component({
   selector: 'app-adjustment-point',
@@ -18,7 +21,11 @@ import { User } from 'src/app/models/user';
   styleUrls: ['./adjustment-point.page.scss'],
 })
 export class AdjustmentPointPage implements OnInit {
+  @Input() jorneyDay: PointUserDay;
+  @Input() listPointsJorney: Array<Point>;
+
   @ViewChild(IonContent) ionContent: IonContent;
+
   formAdjustment: FormGroup = this.formService.formAdjustmentPoint;
   dataTimeValue: string;
   dataUser: User;
@@ -41,16 +48,24 @@ export class AdjustmentPointPage implements OnInit {
     private adjustmentService: AdjustmentPointService
   ) {}
 
-  ngOnInit() {
-  
-  }
+  ngOnInit() {}
 
   ngOnDestroy() {
     this.userSubscription.unsubscribe();
   }
 
   ionViewDidEnter() {
+    this.confiInit();
     this.getDataService();
+  }
+
+  // -> Config. iniciais
+  confiInit() {
+    this.formAdjustment.patchValue({
+      nameUser: this.jorneyDay?.user?.name,
+      hourStart: this.currentDate,
+      hourEnd: this.currentDate,
+    });
   }
 
   // -> Recuperando dados do servico
@@ -88,6 +103,7 @@ export class AdjustmentPointPage implements OnInit {
   onClickSend() {
     if (this.listAdjustment.length) {
       this.adjustmentService.saveDataAdjustment(
+        TypeUser.GESTOR,
         this.dataUser,
         this.listAdjustment
       );
