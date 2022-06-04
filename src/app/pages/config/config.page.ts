@@ -97,10 +97,11 @@ export class ConfigPage implements OnInit {
     const dataUser = new User({
       idUser: idUser,
       name: name,
+      typeUser: typeUser,
       identification: identification,
     });
 
-    this.userService.updateDataUser(dataUser, typeUser);
+    this.userService.updateDataUser(dataUser);
   }
 
   // -> Salvar dados do gestor do colaborador

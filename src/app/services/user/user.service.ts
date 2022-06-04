@@ -88,12 +88,14 @@ export class UserService {
       .child(dataUser.idUser)
       .update(dataUser)
       .then(() => {
-        this.saveNewManager(dataUser);
         this.alertService.showAlert(
           'Parabéns!',
           'Sua conta foi criada com sucesso.',
           'Fique a vontade para continuar explorando o app.'
         );
+        if (dataUser.typeUser == TypeUser.GESTOR) {
+          this.saveDataManager(dataUser);
+        }
       })
       .catch((error) => {
         this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
@@ -123,7 +125,7 @@ export class UserService {
   }
 
   // -> Atualizando dados do usuario
-  async updateDataUser(dataUser: User, typeUser: string) {
+  async updateDataUser(dataUser: User) {
     await this.db
       .ref('dataUser')
       .child(dataUser.idUser)
@@ -135,10 +137,9 @@ export class UserService {
           ''
         );
 
-        if(typeUser == TypeUser.GESTOR){
-          //this.saveNewManager(dataUser);
+        if (dataUser.typeUser == TypeUser.GESTOR) {
+          this.saveDataManager(dataUser);
         }
-
       })
       .catch((error) => {
         this.alertService.showToast('Algo saiu errado. Erro: ' + error.code);
@@ -146,13 +147,12 @@ export class UserService {
   }
 
   // -> Salvando dados do gestor
-  saveNewManager(dataUser: User) {
+  saveDataManager(dataUser: User) {
     if (dataUser.typeUser == TypeUser.GESTOR) {
-      const idFire = this.fireDatabase.createPushId();
-
+  
       this.db
         .ref('managers')
-        .child(idFire)
+        .child(dataUser.idUser)
         .update(dataUser)
         .catch((error) => {
           this.alertService.showToast(

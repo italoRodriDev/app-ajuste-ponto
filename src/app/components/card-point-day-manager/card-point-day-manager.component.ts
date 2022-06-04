@@ -1,11 +1,10 @@
-import { DetailPointUserPage } from './../../pages/detail-point-user/detail-point-user.page';
-import { ModalController } from '@ionic/angular';
-import { PointUserDay } from 'src/app/models/point-user-day';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
-import { GetPointService } from 'src/app/services/point/get-point.service';
 import { Component, Input, OnInit } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { ModalController } from '@ionic/angular';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { Point } from 'src/app/models/point';
+import { PointUserDay } from 'src/app/models/point-user-day';
+import { DetailPointUserPage } from './../../pages/detail-point-user/detail-point-user.page';
 
 @Component({
   selector: 'app-card-point-day-manager',
@@ -14,9 +13,8 @@ import { Point } from 'src/app/models/point';
 })
 export class CardPointDayManagerComponent implements OnInit {
   @Input() data: PointUserDay;
-  @Input() currentDateID: string;
   subPoits: Subscription;
-  toggleBtn: boolean = true;
+  toggleBtn: boolean = false;
 
   db = this.fireDatabase.database;
   listPointsDay: Array<Point> = [];
@@ -30,16 +28,16 @@ export class CardPointDayManagerComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    //this.getPointsUser();
+    this.getPointsUser();
   }
 
   // -> Recuperando dados do servico
   getPointsUser() {
     this.db
       .ref('pointsDay')
-      .child(this.currentDateID)
+      .child(this.data.idUserPoint)
       .child(this.data.idUser)
-      .on('value', (snapshot) => {
+      .once('value', (snapshot) => {
         const data = snapshot.val();
 
         if (data) {
@@ -65,14 +63,16 @@ export class CardPointDayManagerComponent implements OnInit {
       mode: 'ios',
       componentProps: {
         data: this.data,
-        listPoints: this.listPointsDay
-      }
+        listPoints: this.listPointsDay,
+      },
     });
     await modal.present();
   }
 
   // -> Toggle
   onToggle() {
-    this.toggleBtn == true ? (this.toggleBtn = false) : (this.toggleBtn = true);
+    this.toggleBtn == false
+      ? (this.toggleBtn = true)
+      : (this.toggleBtn = false);
   }
 }

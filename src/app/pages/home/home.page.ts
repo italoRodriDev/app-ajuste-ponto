@@ -51,6 +51,11 @@ export class HomePage {
     private modalCtrl: ModalController
   ) {}
 
+
+  ngOnInit() {
+    
+  }
+
   ionViewDidEnter() {
     this.ionSelectStatus.disabled = true;
     this.getDataService();
