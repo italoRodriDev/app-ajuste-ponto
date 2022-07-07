@@ -80,7 +80,10 @@ export class DetailMyPointsPage implements OnInit {
 
   // -> Recuperando ordems
   doReorder(ev) {
+  
+    const value = ev.detail; 
     this.listPointsJorney = ev.detail.complete(this.listPointsJorney);
+   
     this.toggleSave = true;
   }
 
@@ -257,6 +260,8 @@ export class DetailMyPointsPage implements OnInit {
               this.listPointsJorney
             );
             this.toggleSave = false;
+            this.onDismiss();
+            window.location.reload();
           },
         },
       ],

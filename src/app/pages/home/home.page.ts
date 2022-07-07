@@ -1,3 +1,4 @@
+import { AlertsService } from './../../services/utils/alerts/alerts.service';
 import { ChangeDetectorRef, Component, ViewChild } from '@angular/core';
 import { IonButton, IonSelect, ModalController } from '@ionic/angular';
 import * as moment from 'moment';
@@ -48,13 +49,11 @@ export class HomePage {
     private setPointService: SetPointService,
     private getPointService: GetPointService,
     private changeDetector: ChangeDetectorRef,
-    private modalCtrl: ModalController
+    private modalCtrl: ModalController,
+    private alertService: AlertsService
   ) {}
 
-
-  ngOnInit() {
-    
-  }
+  ngOnInit() {}
 
   ionViewDidEnter() {
     this.ionSelectStatus.disabled = true;
@@ -207,7 +206,11 @@ export class HomePage {
   onClickBaterPonto() {
     this.ionSelectStatus.disabled = false;
     setTimeout(() => {
-      this.ionSelectStatus.open();
+      if (this.isJorney() == true) {
+        this.ionSelectStatus.open();
+      } else {
+        this.alertService.showToast('Essa jornada já passou!');
+      }
     }, 200);
   }
 
@@ -244,6 +247,8 @@ export class HomePage {
     const tomorrow = moment(currentJorney).add(1, 'days');
     // -> Data anterior
     const yesterday = moment(currentJorney).subtract(1, 'days').startOf('day');
+    // -> Data atual
+    const currentDate = moment().format();
 
     switch (typeClick) {
       case 'BACK':
@@ -255,10 +260,16 @@ export class HomePage {
         break;
       case 'NEXT':
         const filterTomorrow = moment(tomorrow).format('DDMMYYYY').toString();
-        this.getPointService.getDataPointDayUser(filterTomorrow, dataUser);
-        this.currentDateJorney = moment(tomorrow).format();
-        this.resetDataDayPoints();
-        this.changeDetector.detectChanges();
+        if (tomorrow.format() < currentDate) {
+          this.getPointService.getDataPointDayUser(filterTomorrow, dataUser);
+          this.currentDateJorney = moment(tomorrow).format();
+          this.resetDataDayPoints();
+          this.changeDetector.detectChanges();
+        } else {
+          this.alertService.showToast(
+            'A próxima jornada será liberada a manhã!'
+          );
+        }
         break;
     }
   }
@@ -300,29 +311,49 @@ export class HomePage {
 
   // -> Mostrar modal ajuste de ponto
   async onClickAdjustmentPoint() {
-    const modal = await this.modalCtrl.create({
-      component: AdjustmentPointPage,
-      mode: 'ios',
-      componentProps: {
-        jorneyDay: this.jorneyDay,
-        listPointsJorney: this.listPoints,
-      },
-    });
-    await modal.present();
+    if (this.isJorney() == false) {
+      const modal = await this.modalCtrl.create({
+        component: AdjustmentPointPage,
+        mode: 'ios',
+        componentProps: {
+          jorneyDay: this.jorneyDay,
+          listPointsJorney: this.listPoints,
+        },
+      });
+      await modal.present();
+    } else {
+      this.alertService.showToast('O ajuste será liberado a manhã!');
+    }
   }
 
   // -> Mostrar modal ajuste de ponto
   async onClickDetailMyPoint() {
-    const modal = await this.modalCtrl.create({
-      component: DetailMyPointsPage,
-      mode: 'ios',
-      componentProps: {
-        dataUser: this.dataUser,
-        jorneyDay: this.jorneyDay,
-        listPointsJorney: this.listPoints,
-      },
-    });
-    await modal.present();
+    if (this.isJorney() == false) {
+      const modal = await this.modalCtrl.create({
+        component: DetailMyPointsPage,
+        mode: 'ios',
+        componentProps: {
+          dataUser: this.dataUser,
+          jorneyDay: this.jorneyDay,
+          listPointsJorney: this.listPoints,
+        },
+      });
+      await modal.present();
+    } else {
+      this.alertService.showToast('O ajuste será liberado a manhã!');
+    }
+  }
+
+  // -> Validando se está em jornada
+  isJorney(): boolean {
+    const currentJorney = moment(this.currentDateJorney).format('DDMMYYYY');
+    const currentDay = moment().format('DDMMYYYY');
+
+    if (currentJorney == currentDay) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // -> Mostrar meu perfil

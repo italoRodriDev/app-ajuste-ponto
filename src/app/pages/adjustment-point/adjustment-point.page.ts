@@ -1,19 +1,18 @@
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AngularFireDatabase } from '@angular/fire/compat/database';
+import { FormGroup } from '@angular/forms';
+import { IonContent, ModalController } from '@ionic/angular';
+import * as moment from 'moment';
+import { Subscription } from 'rxjs';
+import { Point } from 'src/app/models/point';
+import { User } from 'src/app/models/user';
+import { FormsService } from 'src/app/services/forms/forms.service';
+import { AdjustmentPointService } from 'src/app/services/point/adjustment-point.service';
+import { TypePointAdjustment } from './../../enums/type-point-adjustment';
 import { TypeUser } from './../../enums/type-user';
 import { PointUserDay } from './../../models/point-user-day';
 import { UserService } from './../../services/user/user.service';
-import { AngularFireDatabase } from '@angular/fire/compat/database';
 import { AlertsService } from './../../services/utils/alerts/alerts.service';
-import { Subscription } from 'rxjs';
-import { AuthService } from 'src/app/services/authentication/auth.service';
-import { TypePointAdjustment } from './../../enums/type-point-adjustment';
-import { FormGroup } from '@angular/forms';
-import { FormsService } from 'src/app/services/forms/forms.service';
-import { Component, Input, OnInit, ViewChild } from '@angular/core';
-import { IonContent, ModalController } from '@ionic/angular';
-import * as moment from 'moment';
-import { AdjustmentPointService } from 'src/app/services/point/adjustment-point.service';
-import { User } from 'src/app/models/user';
-import { Point } from 'src/app/models/point';
 
 @Component({
   selector: 'app-adjustment-point',
